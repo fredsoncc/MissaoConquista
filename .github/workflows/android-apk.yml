@@ -11,22 +11,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
       - name: Build Web
-        run: npm run build
+        run: pnpm build
       - name: Create Android project
-        run: if [ ! -d android ]; then npx cap add android; else echo "Android project already exists"; fi
+        run: if [ ! -d android ]; then pnpm exec cap add android; else echo "Android project already exists"; fi
       - name: Versionar APK
         run: |
           VERSION_NAME="1.0.${GITHUB_RUN_NUMBER}"
@@ -35,7 +39,7 @@ jobs:
           grep -E "versionCode|versionName" android/app/build.gradle
           echo "VERSION_NAME=${VERSION_NAME}" >> "$GITHUB_ENV"
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: pnpm exec cap sync android
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
