@@ -51,3 +51,6 @@
 - [ ] Validar persistência do novo hash e liberação do painel Admin após a troca
 - [x] Adicionar link visível `Criar conta` no diálogo de entrada de usuário
 - [ ] Validar a alternância entre login e cadastro em desktop e Android
+- [ ] Corrigir cadastro de usuário com senha válida contendo símbolos e números
+- [ ] Corrigir troca da senha temporária do administrador e renovar a sessão após salvar
+- [ ] Validar ambos os fluxos no servidor remoto sem registrar senhas em logs
