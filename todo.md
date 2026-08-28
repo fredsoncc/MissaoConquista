@@ -1,0 +1,30 @@
+# Project TODO
+
+- [x] Criar mapa galáctico responsivo com planetas, rotas, frotas e leitura clara em desktop/Android
+- [x] Implementar jogo de estratégia espacial por turnos inspirado nas mecânicas do Konquest
+- [x] Implementar produção de naves, movimentação, conquista e condições de vitória
+- [x] Criar animação de abertura cósmica antes do menu principal
+- [x] Criar interface moderna com gradiente azul-meia-noite/violeta, estrelas, nebulosas, orbes, lens flares e brilho ciano
+- [ ] Implementar configuração de partidas locais no mesmo dispositivo
+- [x] Implementar alternância de jogadores nas partidas locais
+- [ ] Implementar criação, listagem, entrada e saída de salas on-line
+- [ ] Implementar acesso por código de sala
+- [ ] Implementar persistência básica do estado das partidas on-line
+- [ ] Implementar cadastro e login com usuário e senha
+- [ ] Permitir salvar perfis, partidas e pontuações para usuários autenticados
+- [ ] Implementar contatos multiplayer salvos por perfis autenticados
+- [ ] Implementar presença, contatos e lobby em tempo real sem recarregar a página
+- [ ] Criar ranking público mostrando exatamente os 10 melhores resultados
+- [ ] Criar área administrativa protegida por login de administrador para gerenciamento de scores e dados operacionais
+- [ ] Preparar experiência responsiva e empacotamento para Android
+- [ ] Configurar geração de APK
+- [x] Criar README com visão do jogo, tecnologias, execução e publicação
+- [ ] Configurar GitHub Actions para gerar APK a cada atualização e publicar como artefato
+- [ ] Usar o repositório https://github.com/fredsoncc/MissaoConquista como destino do código
+- [ ] Usar https://github.com/kde/konquest como referência de mecânicas e preservar os requisitos de licença aplicáveis
+- [ ] Escrever e executar testes automatizados para regras, salas, ranking, autenticação e permissões administrativas
+- [ ] Executar verificação visual e responsiva em desktop e viewport Android
+- [x] Alinhar a página inicial ao padrão visual e de layout dos demais projetos da FCC
+- [x] Substituir o fundo abstrato do tabuleiro por céu estrelado discreto e realista, sem prejudicar a legibilidade
+- [x] Reproduzir a linguagem visual da referência FCcApi: composição dividida, painel institucional escuro, área clara de conteúdo, verde-turquesa como acento, tipografia forte e margens amplas
+- [x] Usar o céu estrelado discreto e realista somente no tabuleiro, mantendo o menu alinhado à identidade FCC

@@ -1,33 +1,63 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Rocket, Users, Trophy, LogIn, Plus, LogOut, ChevronRight, Radio, Shield, Sparkles } from "lucide-react";
+import { createInitialGame, endTurn, playerLabel, sendFleet, type GameState, type Planet } from "@/game/engine";
+import { trpc } from "@/lib/trpc";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
+const art = "/manus-storage/missao-conquista-visual-target_4a31a12c.png";
+const scores = ["Comandante Lyra", "Nova Vanguard", "Orion Prime", "Capitã Vega", "Sirius IX", "Asterion", "Nebula Fox", "Solaria", "Pulsar", "Andromeda"];
+
+function GalaxyMap({ game, selected, onSelect }: { game: GameState; selected: string | null; onSelect: (planet: Planet) => void }) {
+  const lines = useMemo(() => game.planets.flatMap((planet) => planet.neighbors.map((to) => {
+    const target = game.planets.find((item) => item.id === to);
+    return target && planet.id < to ? { from: planet, to: target } : null;
+  }).filter(Boolean)), [game.planets]);
+  return <div className="galaxy-map" aria-label="Mapa galáctico">
+    <div className="map-noise" />
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="routes" aria-hidden="true">
+      {lines.map((line) => line && <line key={`${line.from.id}-${line.to.id}`} x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} />)}
+    </svg>
+    {game.planets.map((planet) => <button key={planet.id} className={`planet planet-${planet.owner} ${selected === planet.id ? "planet-selected" : ""}`} style={{ left: `${planet.x}%`, top: `${planet.y}%` }} onClick={() => onSelect(planet)} aria-label={`${planet.name}, ${planet.ships} naves`}>
+      <span className="planet-orb" /><span className="planet-pulse" /><span className="planet-label">{planet.name}</span><span className="planet-count">{planet.ships}</span>
+    </button>)}
+    <div className="map-legend"><span><i className="dot dot-cyan" />Sua frota</span><span><i className="dot dot-violet" />Rival</span><span><i className="dot dot-neutral" />Neutro</span></div>
+  </div>;
+}
+
+function GameBoard({ onExit }: { onExit: () => void }) {
+  const [game, setGame] = useState(createInitialGame);
+  const [selected, setSelected] = useState<string | null>("sol");
+  const [fleetSize, setFleetSize] = useState(4);
+  const [message, setMessage] = useState("Selecione um planeta vizinho para traçar uma rota.");
+  const selectedPlanet = game.planets.find((planet) => planet.id === selected);
+  const active = game.activePlayer;
+  const owned = game.planets.filter((planet) => planet.owner === active);
+  const targetOptions = selectedPlanet?.neighbors.map((id) => game.planets.find((planet) => planet.id === id)).filter(Boolean) ?? [];
+  const launch = (targetId: string) => {
+    if (!selected) return;
+    const next = sendFleet(game, selected, targetId, fleetSize);
+    if (next === game) setMessage("Rota inválida ou naves insuficientes."); else { setGame(next); setMessage(`Frota enviada de ${selectedPlanet?.name} para ${game.planets.find((p) => p.id === targetId)?.name}.`); }
+  };
+  return <div className="game-shell">
+    <header className="game-topbar"><button className="brand-mini" onClick={onExit}><span className="brand-mark"><Rocket size={16} /></span><span>MISSÃO<span>CONQUISTA</span></span></button><div className="turn-status"><span className="status-live"><Radio size={13} /> TURNO {game.turn}</span><span className={`active-player ${active}`}>{playerLabel(active)}</span></div><Button variant="ghost" onClick={onExit} className="top-action"><LogOut size={16} /> Sair</Button></header>
+    <main className="game-layout"><section className="map-panel"><div className="panel-heading"><div><p className="eyebrow">SECTOR 07 · CAMPANHA LOCAL</p><h2>O Véu de Andrômeda</h2></div><Badge variant="outline" className="phase-badge">{game.phase === "victory" ? "FIM DE JOGO" : "FASE DE PLANEJAMENTO"}</Badge></div><GalaxyMap game={game} selected={selected} onSelect={(planet) => { setSelected(planet.id); setMessage(`${planet.name}: ${planet.ships} naves · produção +${planet.production}.`); }} /></section>
+      <aside className="command-panel"><div className="commander-card"><div className={`commander-avatar ${active}`}><Sparkles size={18} /></div><div><span className="eyebrow">COMANDANTE ATIVO</span><h3>{playerLabel(active)}</h3></div><span className="online-dot" /></div><div className="intel-grid"><div><span>PLANETAS</span><strong>{owned.length}</strong></div><div><span>FROTAS</span><strong>{game.fleets.length}</strong></div><div><span>PRODUÇÃO</span><strong>+{owned.reduce((sum, p) => sum + p.production, 0)}</strong></div></div><div className="command-section"><span className="eyebrow">COMANDO DE ROTA</span><div className="selection-readout"><span className="planet-symbol" /> <strong>{selectedPlanet?.name ?? "Nenhum planeta"}</strong><span className="muted">{selectedPlanet ? `${selectedPlanet.ships} naves` : "Selecione no mapa"}</span></div><label className="field-label">Naves para enviar <output>{fleetSize}</output></label><input type="range" min="1" max={Math.max(1, selectedPlanet?.ships ?? 1)} value={fleetSize} onChange={(e) => setFleetSize(Number(e.target.value))} className="fleet-slider" /><div className="route-list">{targetOptions.map((target) => target && <button key={target.id} onClick={() => launch(target.id)} className="route-button"><span>{target.name}</span><ChevronRight size={15} /></button>)}</div></div><div className="command-note"><span className="note-icon">⌁</span><p>{message}</p></div><Button className="end-turn" onClick={() => { setGame(endTurn(game)); setMessage("Produção concluída. O comando passa para o próximo jogador."); }} disabled={game.phase === "victory"}>Encerrar turno <ChevronRight size={17} /></Button>{game.winner && <div className="victory-banner"><Trophy size={18} /> Vitória de {playerLabel(game.winner)}</div>}</aside></main>
+  </div>;
+}
+
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
-    </div>
-  );
+  const [intro, setIntro] = useState(true); const [screen, setScreen] = useState<"menu" | "game" | "rooms" | "ranking">("menu"); const [localRooms, setLocalRooms] = useState(["Nebulosa Azul", "Fronteira de Orion"]); const [roomCode, setRoomCode] = useState(""); const [authOpen, setAuthOpen] = useState(false); const roomsQuery = trpc.rooms.list.useQuery(undefined, { refetchInterval: 4000 }); const scoresQuery = trpc.scores.top.useQuery(undefined, { refetchInterval: 8000 }); const rooms = roomsQuery.data?.length ? roomsQuery.data.map((room) => `${room.name} · Código ${room.code}`) : localRooms; const ranking = scoresQuery.data?.length ? scoresQuery.data.map((score) => ({ name: score.playerName, points: score.points })) : scores.map((name, index) => ({ name, points: 98740 - index * 7312 }));
+  useEffect(() => { const timer = window.setTimeout(() => setIntro(false), 2400); return () => window.clearTimeout(timer); }, []);
+  if (intro) return <div className="intro-screen" style={{ backgroundImage: `linear-gradient(115deg, rgba(3,8,28,.78), rgba(20,8,52,.34)), url(${art})` }}><div className="intro-stars" /><div className="intro-core"><div className="orbit-ring" /><div className="intro-sigil"><Rocket size={28} /></div><p className="intro-kicker">FCCGAMES APRESENTA</p><h1>MISSÃO<span>CONQUISTA</span></h1><p className="intro-caption">A galáxia aguarda seu próximo movimento.</p><div className="loading-line"><span /></div></div></div>;
+  if (screen === "game") return <GameBoard onExit={() => setScreen("menu")} />;
+  return <div className="app-shell" style={{ backgroundImage: `linear-gradient(115deg, rgba(3,8,28,.95) 12%, rgba(11,12,45,.82) 54%, rgba(25,10,52,.82)), url(${art})` }}><div className="ambient-glow glow-one" /><div className="ambient-glow glow-two" /><header className="main-nav"><button className="brand" onClick={() => setScreen("menu")}><span className="brand-mark"><Rocket size={18} /></span><span>MISSÃO<span>CONQUISTA</span></span></button><nav><button onClick={() => setScreen("ranking")}><Trophy size={15} /> Ranking</button><button onClick={() => setScreen("rooms")}><Users size={15} /> Salas</button><Button variant="outline" size="sm" onClick={() => setAuthOpen(true)}><LogIn size={15} /> Entrar</Button></nav></header>
+    {screen === "menu" && <main className="menu-layout"><section className="hero-copy"><div className="eyebrow hero-eyebrow"><span className="signal-dot" /> SISTEMA ONLINE · SETOR 07</div><h2>O universo é vasto.<br /><em>A conquista é sua.</em></h2><p>Uma releitura cósmica e nostálgica da estratégia espacial por turnos. Expanda seu império, domine planetas e escreva seu nome entre as estrelas.</p><div className="menu-actions"><Button className="primary-action" onClick={() => setScreen("game")}><Rocket size={17} /> Iniciar missão <ChevronRight size={17} /></Button><Button className="secondary-action" variant="outline" onClick={() => setScreen("rooms")}><Users size={17} /> Multiplayer</Button></div><div className="feature-strip"><span><i>01</i> Estratégia por turnos</span><span><i>02</i> Galáxia procedural</span><span><i>03</i> Salas online</span></div></section><section className="hero-orbit"><div className="planet-hero"><div className="hero-moon" /><div className="hero-planet-ring" /></div><div className="orbit-label label-top">NOVA-7 <span>●</span></div><div className="orbit-label label-bottom">A fronteira começa aqui</div></section></main>}
+    {screen === "rooms" && <main className="subscreen"><div className="subscreen-head"><div><p className="eyebrow">MULTIPLAYER ONLINE</p><h2>Salas de comando</h2><p className="subcopy">Encontre sua frota. O lobby atualiza presença sem recarregar.</p></div><Button className="primary-action" onClick={() => setLocalRooms((current) => [...current, `Sala ${current.length + 1} · Código ${Math.random().toString(36).slice(2, 7).toUpperCase()}`])}><Plus size={17} /> Criar sala</Button></div><div className="room-grid">{rooms.map((room, index) => <Card className="room-card" key={room}><div className="room-icon"><Radio size={17} /></div><div className="room-info"><h3>{room}</h3><p><span className="online-dot" /> {index + 1}/4 comandantes online · partida casual</p></div><Button variant="outline" size="sm" onClick={() => setScreen("game")}>Entrar <ChevronRight size={15} /></Button></Card>)}</div><div className="join-code"><div><p className="eyebrow">CÓDIGO DE SALA</p><h3>Recebeu um convite?</h3></div><div className="code-input"><Input value={roomCode} onChange={(e) => setRoomCode(e.target.value.toUpperCase())} placeholder="EX: 7K4X9" maxLength={5} /><Button onClick={() => roomCode && setScreen("game")}>Entrar</Button></div></div></main>}
+    {screen === "ranking" && <main className="subscreen ranking-screen"><div className="subscreen-head"><div><p className="eyebrow">PLACAR GALÁCTICO</p><h2>Os 10 melhores comandantes</h2><p className="subcopy">Pontuações salvas por perfis autenticados.</p></div><Trophy className="ranking-trophy" size={52} /></div><div className="ranking-list">{ranking.slice(0, 10).map((entry, index) => <div className={`rank-row ${index === 0 ? "rank-first" : ""}`} key={`${entry.name}-${index}`}><span className="rank-number">{String(index + 1).padStart(2, "0")}</span><span className="rank-medal">{index < 3 ? ["◆", "◇", "·"][index] : "·"}</span><strong>{entry.name}</strong><span className="rank-score">{entry.points.toLocaleString("pt-BR")} <small>PTS</small></span></div>)}{Array.from({ length: Math.max(0, 10 - ranking.length) }).map((_, index) => <div className="rank-row" key={`empty-${index}`}><span className="rank-number">{String(ranking.length + index + 1).padStart(2, "0")}</span><span className="rank-medal">·</span><strong>Posição disponível</strong><span className="rank-score">— <small>PTS</small></span></div>)}</div></main>}
+    <footer className="main-footer"><span>© 2026 FCCGAMES</span><span>Uma missão inspirada no clássico Konquest do KDE</span><span><Shield size={13} /> Jogue localmente ou online</span></footer><Dialog open={authOpen} onOpenChange={setAuthOpen}><DialogContent className="auth-dialog"><DialogHeader><DialogTitle>Identificação de comandante</DialogTitle></DialogHeader><p>Entre para salvar suas partidas, contatos e pontuações.</p><Input placeholder="Usuário" /><Input placeholder="Senha" type="password" /><Button className="primary-action" onClick={() => setAuthOpen(false)}>Entrar na frota</Button><small>Cadastro de novos perfis disponível no próximo ciclo.</small></DialogContent></Dialog>
+  </div>;
 }
