@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -6,6 +7,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { addContact, addScore, createRoom, findRoomByCode, getUserByOpenId, joinRoom, leaveRoom, listRooms, saveRoomState, topScores } from "./db";
 
 const roomInput = z.object({ name: z.string().min(3).max(120) });
+const adminProcedure = protectedProcedure.use(({ ctx, next }) => { if (ctx.user.role !== 'admin') throw new TRPCError({ code: 'FORBIDDEN', message: 'Acesso administrativo necessário.' }); return next(); });
 export const appRouter = router({
   system: systemRouter,
   auth: router({ me: publicProcedure.query(opts => opts.ctx.user), logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); return { success: true } as const; }) }),
@@ -21,5 +23,6 @@ export const appRouter = router({
     submit: protectedProcedure.input(z.object({ playerName: z.string().min(1).max(120), points: z.number().int().min(0), turns: z.number().int().min(1) })).mutation(({ ctx, input }) => addScore({ ...input, userId: ctx.user.id })),
   }),
   contacts: router({ add: protectedProcedure.input(z.object({ contactUserId: z.number() })).mutation(({ ctx, input }) => addContact(ctx.user.id, input.contactUserId)) }),
+  admin: router({ scores: adminProcedure.query(() => topScores()) }),
 });
 export type AppRouter = typeof appRouter;
