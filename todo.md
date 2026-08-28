@@ -19,8 +19,8 @@
 - [ ] Preparar experiência responsiva e empacotamento para Android
 - [ ] Configurar geração de APK
 - [x] Criar README com visão do jogo, tecnologias, execução e publicação
-- [ ] Configurar GitHub Actions para gerar APK a cada atualização e publicar como artefato
-- [ ] Usar o repositório https://github.com/fredsoncc/MissaoConquista como destino do código
+- [x] Configurar GitHub Actions para gerar APK a cada atualização e publicar como artefato
+- [x] Usar o repositório https://github.com/fredsoncc/MissaoConquista como destino do código
 - [ ] Usar https://github.com/kde/konquest como referência de mecânicas e preservar os requisitos de licença aplicáveis
 - [ ] Escrever e executar testes automatizados para regras, salas, ranking, autenticação e permissões administrativas
 - [ ] Executar verificação visual e responsiva em desktop e viewport Android
@@ -30,7 +30,7 @@
 - [x] Usar o céu estrelado discreto e realista somente no tabuleiro, mantendo o menu alinhado à identidade FCC
 - [x] Corrigir ausência do acesso visível ao login administrativo no menu
 - [ ] Exibir painel administrativo protegido para gerenciamento de scores e dados operacionais
-- [ ] Incrementar automaticamente versionCode e versionName do APK a cada execução do GitHub Actions
+- [x] Incrementar automaticamente versionCode e versionName do APK a cada execução do GitHub Actions
 - [ ] Implementar autenticação local geral com usuário e senha para perfis comuns
 - [ ] Provisionar o administrador por credenciais configuráveis no ambiente, mantendo `admin/admin` apenas como fallback temporário de implantação
 - [x] Proteger o painel Admin com a sessão da conta local
@@ -38,6 +38,6 @@
 - [x] Marcar a conta inicial como exigindo troca de senha
 - [x] Bloquear o painel até a nova senha ser definida
 - [x] Documentar implantação mínima em uma etapa de login e troca de senha
-- [ ] Consolidar no código do jogo o fluxo `admin/admin` temporário com troca obrigatória de senha
-- [ ] Enviar a implementação atualizada para o repositório GitHub `fredsoncc/MissaoConquista`
-- [ ] Confirmar que o build e o deploy usam a mesma implementação sincronizada
+- [x] Consolidar no código do jogo o fluxo `admin/admin` temporário com troca obrigatória de senha
+- [x] Enviar a implementação atualizada para o repositório GitHub `fredsoncc/MissaoConquista`
+- [x] Confirmar que o build e o deploy usam a mesma implementação sincronizada
