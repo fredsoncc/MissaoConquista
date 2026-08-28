@@ -28,3 +28,5 @@
 - [x] Substituir o fundo abstrato do tabuleiro por céu estrelado discreto e realista, sem prejudicar a legibilidade
 - [x] Reproduzir a linguagem visual da referência FCcApi: composição dividida, painel institucional escuro, área clara de conteúdo, verde-turquesa como acento, tipografia forte e margens amplas
 - [x] Usar o céu estrelado discreto e realista somente no tabuleiro, mantendo o menu alinhado à identidade FCC
+- [x] Corrigir ausência do acesso visível ao login administrativo no menu
+- [ ] Exibir painel administrativo protegido para gerenciamento de scores e dados operacionais
