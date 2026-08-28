@@ -38,3 +38,6 @@
 - [x] Marcar a conta inicial como exigindo troca de senha
 - [x] Bloquear o painel até a nova senha ser definida
 - [x] Documentar implantação mínima em uma etapa de login e troca de senha
+- [ ] Consolidar no código do jogo o fluxo `admin/admin` temporário com troca obrigatória de senha
+- [ ] Enviar a implementação atualizada para o repositório GitHub `fredsoncc/MissaoConquista`
+- [ ] Confirmar que o build e o deploy usam a mesma implementação sincronizada
