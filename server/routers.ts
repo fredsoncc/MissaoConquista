@@ -6,7 +6,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { ENV } from "./_core/env";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { addContact, addScore, createRoom, ensureInitialAdmin, findRoomByCode, getUserByOpenId, getUserByUsername, joinRoom, leaveRoom, listRooms, saveRoomState, topScores, updateLocalPassword } from "./db";
+import { addContact, addScore, createLocalUser, createRoom, ensureInitialAdmin, findRoomByCode, getUserByOpenId, getUserByUsername, joinRoom, leaveRoom, listRooms, saveRoomState, topScores, updateLocalPassword } from "./db";
 import { hashPassword, verifyPassword } from "./auth/local";
 
 const roomInput = z.object({ name: z.string().min(3).max(120) });
@@ -19,6 +19,7 @@ export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+    register: publicProcedure.input(z.object({ username: z.string().trim().min(3).max(64), password: z.string().min(12).max(128) })).mutation(async ({ input }) => { const username = input.username.toLowerCase(); if (await getUserByUsername(username)) throw new TRPCError({ code: "CONFLICT", message: "Usuário já cadastrado." }); const user = await createLocalUser(username, hashPassword(input.password)); return { success: Boolean(user) }; }),
     localLogin: publicProcedure.input(z.object({ username: z.string().min(1).max(64), password: z.string().min(1).max(128) })).mutation(async ({ ctx, input }) => { const username = input.username.trim().toLowerCase(); const user = await ensureInitialAdmin("admin", "admin"); const account = username === "admin" ? user : await getUserByUsername(username); if (!account?.passwordHash || !verifyPassword(input.password, account.passwordHash)) throw new TRPCError({ code: "UNAUTHORIZED", message: "Usuário ou senha inválidos." }); const token = await signLocalSession(account.openId); ctx.res.cookie(LOCAL_COOKIE_NAME, token, { ...getSessionCookieOptions(ctx.req), maxAge: cookieMaxAge }); return { user: { id: account.id, name: account.name, username: account.username, role: account.role }, mustChangePassword: account.mustChangePassword }; }),
     changePassword: protectedProcedure.input(z.object({ currentPassword: z.string().min(1), newPassword: z.string().min(12).max(128) })).mutation(async ({ ctx, input }) => { if (!ctx.user.passwordHash || !verifyPassword(input.currentPassword, ctx.user.passwordHash)) throw new TRPCError({ code: "UNAUTHORIZED", message: "Senha atual inválida." }); if (input.newPassword.toLowerCase() === "adminadmin" || input.newPassword.toLowerCase() === "admin") throw new TRPCError({ code: "BAD_REQUEST", message: "Escolha uma senha diferente da temporária." }); await updateLocalPassword(ctx.user.id, hashPassword(input.newPassword)); const updated = await getUserByOpenId(ctx.user.openId); return { success: true, mustChangePassword: false, user: updated }; }),
     logout: publicProcedure.mutation(({ ctx }) => { const cookieOptions = getSessionCookieOptions(ctx.req); ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); ctx.res.clearCookie(LOCAL_COOKIE_NAME, { ...cookieOptions, maxAge: -1 }); return { success: true } as const; }),
