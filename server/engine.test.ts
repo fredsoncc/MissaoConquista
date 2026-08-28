@@ -9,5 +9,6 @@ describe("MissaoConquista engine", () => {
     expect(next.fleets[0]).toMatchObject({ from: "sol", to: "vega", ships: 5, owner: "cyan" });
   });
   it("rejects a route from a planet the player does not own", () => expect(sendFleet(createInitialGame(), "orion", "rigel", 2)).toEqual(createInitialGame()));
+  it("rejects a non-neighbor target and an excessive fleet", () => { const initial = createInitialGame(); expect(sendFleet(initial, "sol", "orion", 2)).toEqual(initial); expect(sendFleet(initial, "sol", "vega", 99)).toEqual(initial); });
   it("produces ships and alternates the active player", () => { const next = endTurn(createInitialGame()); expect(next.activePlayer).toBe("violet"); expect(next.turn).toBe(2); expect(next.planets.find((planet) => planet.id === "sol")?.ships).toBe(23); });
 });

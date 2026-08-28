@@ -45,3 +45,5 @@
 - [x] Validar cards de salas, lobby e entrada por código após a correção visual
 - [x] Validar explicitamente a tela `/rooms` com conteúdo longo e vazio, incluindo cards, lobby e campo de código
 - [x] Testar a interação do campo de código e do botão de entrada após a correção visual
+- [x] Corrigir seleção de planeta e envio de ataque/frota no jogo
+- [x] Validar ataque contra alvo vizinho e feedback de rota inválida
