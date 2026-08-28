@@ -41,3 +41,7 @@
 - [x] Consolidar no código do jogo o fluxo `admin/admin` temporário com troca obrigatória de senha
 - [x] Enviar a implementação atualizada para o repositório GitHub `fredsoncc/MissaoConquista`
 - [x] Confirmar que o build e o deploy usam a mesma implementação sincronizada
+- [x] Corrigir bug de layout da página Multiplayer em desktop e Android
+- [x] Validar cards de salas, lobby e entrada por código após a correção visual
+- [x] Validar explicitamente a tela `/rooms` com conteúdo longo e vazio, incluindo cards, lobby e campo de código
+- [x] Testar a interação do campo de código e do botão de entrada após a correção visual

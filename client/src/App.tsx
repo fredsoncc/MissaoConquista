@@ -6,11 +6,18 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
+function RoomsPage() { return <Home initialScreen="rooms" />; }
+function RankingPage() { return <Home initialScreen="ranking" />; }
+function AdminPage() { return <Home initialScreen="admin" />; }
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/rooms"} component={RoomsPage} />
+      <Route path={"/ranking"} component={RankingPage} />
+      <Route path={"/admin"} component={AdminPage} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

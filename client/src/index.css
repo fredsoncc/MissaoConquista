@@ -51,3 +51,36 @@ button { cursor: pointer; }
 .subscreen{max-width:920px;min-height:calc(100vh - 150px);margin:auto;padding:90px 6.6vw}.subscreen-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:34px}.subscreen h2{font-size:clamp(36px,5vw,60px);margin:10px 0 12px;letter-spacing:-.07em}.subcopy{color:#758886;max-width:470px}.room-grid{display:grid;gap:10px}.room-card{border:1px solid rgba(13,41,48,.12)!important;background:rgba(255,255,255,.54)!important;display:flex;align-items:center;gap:14px;padding:15px 18px}.room-icon{width:37px;height:37px;border-radius:10px;display:grid;place-items:center;background:#d7f8ed;color:var(--fcc-green)}.room-info{flex:1}.room-info h3{font-size:14px;margin:0 0 4px}.room-info p{font:10px 'Space Mono',monospace;color:#829593;margin:0;display:flex;gap:7px;align-items:center}.join-code{display:flex;justify-content:space-between;align-items:center;margin-top:33px;border-top:1px solid var(--fcc-line);padding-top:28px}.join-code h3{margin:8px 0 0;font-size:18px}.code-input{display:flex;gap:8px}.code-input input{width:150px;text-transform:uppercase}.ranking-list{border-top:1px solid var(--fcc-line)}.rank-row{display:grid;grid-template-columns:50px 30px 1fr auto;align-items:center;padding:17px 14px;border-bottom:1px solid var(--fcc-line);color:#738683}.rank-row strong{color:var(--fcc-ink);font-size:14px}.rank-number,.rank-score{font:11px 'Space Mono',monospace}.rank-score{color:var(--fcc-green);font-weight:700}.rank-score small{font-size:8px;color:#8ca19d}.rank-first{background:rgba(50,215,168,.09)}.rank-first strong{font-size:17px}.rank-medal{color:var(--fcc-green)}.ranking-trophy{color:var(--fcc-green)}.auth-dialog{background:var(--fcc-paper)!important;color:var(--fcc-ink)!important}.auth-dialog p,.auth-dialog small{color:#758886}.auth-dialog input{margin-top:8px}
 @media(max-width:850px){.app-shell::before{inset:0 0 58% 0}.app-shell::after{inset:42% 0 0}.main-nav{padding:0 5vw;height:76px;background:linear-gradient(180deg,rgba(13,41,48,.98) 0 100%,rgba(244,247,245,.94) 100%)}.main-nav nav{gap:12px}.main-nav nav button:not(.primary-action){font-size:0;color:#d8eee7}.main-nav nav button:not(.primary-action) svg{font-size:16px}.menu-layout{grid-template-columns:1fr;padding:75px 7vw 50px;gap:10px}.hero-orbit{min-height:270px;transform:scale(.75);margin-top:-30px}.hero-copy h2{font-size:clamp(45px,12vw,70px)}.main-footer{padding:16px 6vw;align-items:start;flex-direction:column;gap:9px}.game-layout{grid-template-columns:1fr}.command-panel{border-left:0;border-top:1px solid rgba(180,255,234,.1);padding:25px 6vw}.map-panel{padding:25px 5vw}.galaxy-map{min-height:430px;height:62vh}.game-topbar{padding:0 5vw}.turn-status{gap:7px;font-size:8px}.status-live{display:none}.subscreen{padding:55px 7vw}.subscreen-head{align-items:start;gap:20px;flex-direction:column}.join-code{align-items:start;gap:18px;flex-direction:column}.code-input{width:100%}.code-input input{flex:1}.ranking-trophy{display:none}}
 @media(max-width:480px){.brand{font-size:14px}.brand-mark{width:28px;height:28px}.menu-actions{flex-direction:column}.menu-actions button{width:100%}.feature-strip{margin-top:37px;gap:12px}.panel-heading{display:block}.phase-badge{margin-top:13px}.galaxy-map{min-height:410px}.planet-orb{width:23px;height:23px}.planet-label{font-size:8px}.selection-readout{grid-template-columns:15px 1fr;}.selection-readout .muted{grid-column:2}.room-card{flex-wrap:wrap}.room-card button{margin-left:51px}.rank-row{grid-template-columns:38px 22px 1fr auto;padding-inline:4px}.rank-row strong{font-size:12px}.rank-first strong{font-size:14px}}
+
+/* Multiplayer layout hardening */
+.room-grid { width: 100%; }
+.room-card { display: grid !important; grid-template-columns: 40px minmax(0, 1fr) auto; min-width: 0; }
+.room-info { min-width: 0; }
+.room-info h3, .room-info p { overflow: hidden; text-overflow: ellipsis; }
+.room-info h3 { white-space: nowrap; }
+.room-info p { white-space: nowrap; }
+.room-card > button { flex: none; white-space: nowrap; }
+.join-code { gap: 24px; }
+@media (max-width: 850px) {
+  .subscreen { width: 100%; padding-inline: 6vw; }
+  .room-card { grid-template-columns: 38px minmax(0, 1fr); align-items: start; }
+  .room-card > button { grid-column: 2; justify-self: start; margin-top: 6px; }
+  .room-info p { white-space: normal; line-height: 1.45; }
+  .join-code, .code-input { width: 100%; }
+  .code-input input { min-width: 0; width: auto; flex: 1; }
+}
+@media (max-width: 480px) {
+  .subscreen { padding-top: 42px; }
+  .subscreen-head { margin-bottom: 25px; }
+  .room-card { padding: 14px; gap: 11px; }
+  .room-info h3 { font-size: 13px; }
+  .room-info p { font-size: 9px; }
+}
+
+/* Keep secondary screens above the split FCC background layers */
+.subscreen { position: relative; z-index: 2; width: min(100%, 1120px); }
+.subscreen-head, .room-grid, .join-code, .ranking-list, .admin-panel { position: relative; z-index: 2; }
+
+@media (min-width: 851px) {
+  .subscreen { width: 50%; max-width: none; margin-left: 50%; margin-right: 0; padding-left: 5vw; padding-right: 5vw; }
+}
