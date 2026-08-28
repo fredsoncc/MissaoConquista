@@ -30,3 +30,11 @@
 - [x] Usar o céu estrelado discreto e realista somente no tabuleiro, mantendo o menu alinhado à identidade FCC
 - [x] Corrigir ausência do acesso visível ao login administrativo no menu
 - [ ] Exibir painel administrativo protegido para gerenciamento de scores e dados operacionais
+- [ ] Incrementar automaticamente versionCode e versionName do APK a cada execução do GitHub Actions
+- [ ] Implementar autenticação local geral com usuário e senha para perfis comuns
+- [ ] Provisionar o administrador por credenciais configuráveis no ambiente, mantendo `admin/admin` apenas como fallback temporário de implantação
+- [x] Proteger o painel Admin com a sessão da conta local
+- [x] Permitir primeiro acesso com usuário temporário `admin` e senha temporária `admin`
+- [x] Marcar a conta inicial como exigindo troca de senha
+- [x] Bloquear o painel até a nova senha ser definida
+- [x] Documentar implantação mínima em uma etapa de login e troca de senha

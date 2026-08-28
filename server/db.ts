@@ -1,12 +1,16 @@
 import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, rooms, roomMembers, scores, contacts } from "../drizzle/schema";
+import { hashPassword } from "./auth/local";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() { if (!_db && process.env.DATABASE_URL) { try { _db = drizzle(process.env.DATABASE_URL); } catch (error) { console.warn('[Database] Failed to connect:', error); } } return _db; }
 export async function upsertUser(user: InsertUser): Promise<void> { if (!user.openId) throw new Error('User openId is required for upsert'); const db = await getDb(); if (!db) return; const values: InsertUser = { openId: user.openId, name: user.name ?? null, email: user.email ?? null, loginMethod: user.loginMethod ?? null, lastSignedIn: user.lastSignedIn ?? new Date() }; await db.insert(users).values(values).onDuplicateKeyUpdate({ set: { name: values.name, email: values.email, loginMethod: values.loginMethod, lastSignedIn: values.lastSignedIn } }); }
 export async function getUserByOpenId(openId: string) { const db = await getDb(); if (!db) return undefined; const rows = await db.select().from(users).where(eq(users.openId, openId)).limit(1); return rows[0]; }
+export async function getUserByUsername(username: string) { const db = await getDb(); if (!db) return undefined; const rows = await db.select().from(users).where(eq(users.username, username)).limit(1); return rows[0]; }
+export async function ensureInitialAdmin(username: string, password: string) { const existing = await getUserByUsername(username); if (existing) return existing; const db = await getDb(); if (!db) return undefined; await db.insert(users).values({ openId: `local:${username}`, username, passwordHash: hashPassword(password), name: username, loginMethod: 'local', role: 'admin', mustChangePassword: true }); return getUserByUsername(username); }
+export async function updateLocalPassword(userId: number, passwordHash: string) { const db = await getDb(); if (!db) return; await db.update(users).set({ passwordHash, mustChangePassword: false }).where(eq(users.id, userId)); }
 export async function listRooms() { const db = await getDb(); if (!db) return []; return db.select().from(rooms).orderBy(desc(rooms.updatedAt)).limit(50); }
 export async function createRoom(input: { code: string; name: string; createdBy: number; stateJson: string }) { const db = await getDb(); if (!db) return null; const result = await db.insert(rooms).values(input); return { id: Number(result[0].insertId), ...input, status: 'open' as const }; }
 export async function findRoomByCode(code: string) { const db = await getDb(); if (!db) return undefined; const rows = await db.select().from(rooms).where(eq(rooms.code, code)).limit(1); return rows[0]; }

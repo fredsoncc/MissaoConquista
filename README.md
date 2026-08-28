@@ -46,3 +46,7 @@ A publicação Web deve ser feita pelo botão **Publish** no painel de gerenciam
 ## Referências
 
 A base conceitual e as regras nostálgicas vêm do projeto [KDE/konquest](https://github.com/kde/konquest), cujo README descreve Konquest como um jogo de estratégia multiplayer cujo objetivo é expandir um império interestelar e derrotar rivais. O repositório `fredsoncc/MissaoConquista` estava vazio no momento da inicialização; por isso, ele foi usado como destino do novo código FCCGames, enquanto o repositório do KDE foi tratado como referência de mecânicas e licença.
+
+## Primeiro acesso administrativo
+
+Para reduzir o trabalho de implantação, a instalação cria automaticamente uma conta administrativa temporária com usuário `admin` e senha `admin` quando ainda não existe uma conta local. No primeiro login, o painel permanece bloqueado e solicita uma nova senha com pelo menos 12 caracteres. Depois da troca, a senha temporária deixa de funcionar e a nova senha é armazenada somente como hash. Em produção, altere a senha imediatamente após o primeiro acesso e não reutilize `admin` em ambientes expostos publicamente.

@@ -27,6 +27,12 @@ jobs:
         run: npm run build
       - name: Create Android project
         run: npx cap add android
+      - name: Versionar APK
+        run: |
+          VERSION_NAME="1.0.${GITHUB_RUN_NUMBER}"
+          sed -i "s/versionCode 1/versionCode ${GITHUB_RUN_NUMBER}/" android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"${VERSION_NAME}\"/" android/app/build.gradle
+          echo "VERSION_NAME=${VERSION_NAME}" >> "$GITHUB_ENV"
       - name: Sync Capacitor
         run: npx cap sync android
       - name: Build debug APK
@@ -35,5 +41,5 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: missao-conquista-apk
+          name: missao-conquista-apk-v${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
