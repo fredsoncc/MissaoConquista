@@ -10,7 +10,7 @@
 - [ ] Implementar criação, listagem, entrada e saída de salas on-line
 - [ ] Implementar acesso por código de sala
 - [ ] Implementar persistência básica do estado das partidas on-line
-- [ ] Implementar cadastro e login com usuário e senha
+- [x] Implementar cadastro e login com usuário e senha
 - [ ] Permitir salvar perfis, partidas e pontuações para usuários autenticados
 - [ ] Implementar contatos multiplayer salvos por perfis autenticados
 - [ ] Implementar presença, contatos e lobby em tempo real sem recarregar a página
@@ -31,7 +31,7 @@
 - [x] Corrigir ausência do acesso visível ao login administrativo no menu
 - [ ] Exibir painel administrativo protegido para gerenciamento de scores e dados operacionais
 - [x] Incrementar automaticamente versionCode e versionName do APK a cada execução do GitHub Actions
-- [ ] Implementar autenticação local geral com usuário e senha para perfis comuns
+- [x] Implementar autenticação local geral com usuário e senha para perfis comuns
 - [ ] Provisionar o administrador por credenciais configuráveis no ambiente, mantendo `admin/admin` apenas como fallback temporário de implantação
 - [x] Proteger o painel Admin com a sessão da conta local
 - [x] Permitir primeiro acesso com usuário temporário `admin` e senha temporária `admin`
@@ -49,5 +49,5 @@
 - [x] Validar ataque contra alvo vizinho e feedback de rota inválida
 - [ ] Corrigir falha que impede trocar a senha temporária no primeiro acesso
 - [ ] Validar persistência do novo hash e liberação do painel Admin após a troca
-- [ ] Adicionar link visível `Criar conta` no diálogo de entrada de usuário
+- [x] Adicionar link visível `Criar conta` no diálogo de entrada de usuário
 - [ ] Validar a alternância entre login e cadastro em desktop e Android
