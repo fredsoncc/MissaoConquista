@@ -84,3 +84,7 @@ button { cursor: pointer; }
 @media (min-width: 851px) {
   .subscreen { width: 50%; max-width: none; margin-left: 50%; margin-right: 0; padding-left: 5vw; padding-right: 5vw; }
 }
+
+.auth-dialog .text-button { display: block; width: 100%; margin-top: 10px; border: 0; background: transparent; color: var(--fcc-green); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.auth-dialog .text-button:hover { color: var(--fcc-ink); }
+.auth-dialog .password-requirement { display: block; margin-top: 8px; line-height: 1.4; }

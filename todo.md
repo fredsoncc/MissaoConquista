@@ -47,3 +47,7 @@
 - [x] Testar a interação do campo de código e do botão de entrada após a correção visual
 - [x] Corrigir seleção de planeta e envio de ataque/frota no jogo
 - [x] Validar ataque contra alvo vizinho e feedback de rota inválida
+- [ ] Corrigir falha que impede trocar a senha temporária no primeiro acesso
+- [ ] Validar persistência do novo hash e liberação do painel Admin após a troca
+- [ ] Adicionar link visível `Criar conta` no diálogo de entrada de usuário
+- [ ] Validar a alternância entre login e cadastro em desktop e Android
