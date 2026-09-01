@@ -54,3 +54,6 @@
 - [ ] Corrigir cadastro de usuário com senha válida contendo símbolos e números
 - [ ] Corrigir troca da senha temporária do administrador e renovar a sessão após salvar
 - [ ] Validar ambos os fluxos no servidor remoto sem registrar senhas em logs
+- [x] Exibir spinner e texto de processamento no botão de cadastro
+- [x] Exibir spinner e texto de processamento no botão de troca de senha
+- [x] Impedir envios duplicados enquanto as mutações estiverem pendentes

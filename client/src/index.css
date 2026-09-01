@@ -88,3 +88,7 @@ button { cursor: pointer; }
 .auth-dialog .text-button { display: block; width: 100%; margin-top: 10px; border: 0; background: transparent; color: var(--fcc-green); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .auth-dialog .text-button:hover { color: var(--fcc-ink); }
 .auth-dialog .password-requirement { display: block; margin-top: 8px; line-height: 1.4; }
+
+.auth-dialog .button-spinner { animation: button-spin .8s linear infinite; flex: 0 0 auto; }
+@keyframes button-spin { to { transform: rotate(360deg); } }
+.auth-dialog button[aria-busy="true"] { cursor: wait; opacity: .82; }
