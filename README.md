@@ -43,6 +43,20 @@ O projeto usa Capacitor como ponte entre o bundle Web e o Android. Em um ambient
 
 A publicação Web deve ser feita pelo botão **Publish** no painel de gerenciamento do projeto após um checkpoint estável. O hosting gerenciado entrega o jogo em um domínio Manus com suporte a domínio personalizado.
 
+### Atualização do servidor Docker remoto
+
+Para uma instalação Docker própria, use o script versionado `scripts/update-remote.sh` depois de gerar a build. Ele copia `dist`, reinicia obrigatoriamente o container e só termina quando o processo está em execução, evitando que o frontend novo converse com um router tRPC antigo em memória:
+
+```bash
+pnpm build
+REMOTE_SSH_KEY=/caminho/da/chave \\
+REMOTE_HOST=132.145.196.158 \\
+REMOTE_CONTAINER=fcc-missao-konquest \\
+./scripts/update-remote.sh
+```
+
+O script não grava chaves nem senhas no repositório. `REMOTE_USER` pode ser definido quando o usuário remoto não for `ubuntu`.
+
 ## Referências
 
 A base conceitual e as regras nostálgicas vêm do projeto [KDE/konquest](https://github.com/kde/konquest), cujo README descreve Konquest como um jogo de estratégia multiplayer cujo objetivo é expandir um império interestelar e derrotar rivais. O repositório `fredsoncc/MissaoConquista` estava vazio no momento da inicialização; por isso, ele foi usado como destino do novo código FCCGames, enquanto o repositório do KDE foi tratado como referência de mecânicas e licença.

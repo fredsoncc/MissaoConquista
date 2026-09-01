@@ -51,7 +51,7 @@
 - [ ] Validar persistência do novo hash e liberação do painel Admin após a troca
 - [x] Adicionar link visível `Criar conta` no diálogo de entrada de usuário
 - [ ] Validar a alternância entre login e cadastro em desktop e Android
-- [ ] Corrigir cadastro de usuário com senha válida contendo símbolos e números
+- [x] Corrigir cadastro de usuário com senha válida contendo símbolos e números
 - [ ] Corrigir troca da senha temporária do administrador e renovar a sessão após salvar
 - [ ] Validar ambos os fluxos no servidor remoto sem registrar senhas em logs
 - [x] Exibir spinner e texto de processamento no botão de cadastro
@@ -62,3 +62,6 @@
 - [x] Exibir toast de sucesso ou erro após cadastro e troca de senha
 - [x] Adicionar toast de erro no catch da troca de senha
 - [ ] Validar visualmente toasts de sucesso e erro no cadastro e na troca de senha
+- [x] Corrigir erro `No procedure found on path "auth.register"` no cadastro publicado e validar o fluxo ponta a ponta
+- [x] Validar pela interface publicada o fluxo completo de cadastro, toast e login após o deploy
+- [x] Automatizar no procedimento de atualização remota o restart/reload do processo servidor após atualizar o bundle
