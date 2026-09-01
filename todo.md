@@ -57,3 +57,8 @@
 - [x] Exibir spinner e texto de processamento no botão de cadastro
 - [x] Exibir spinner e texto de processamento no botão de troca de senha
 - [x] Impedir envios duplicados enquanto as mutações estiverem pendentes
+- [x] Adicionar indicador visual de força da senha no cadastro
+- [x] Adicionar mostrar/ocultar senha nos campos de senha
+- [x] Exibir toast de sucesso ou erro após cadastro e troca de senha
+- [x] Adicionar toast de erro no catch da troca de senha
+- [ ] Validar visualmente toasts de sucesso e erro no cadastro e na troca de senha

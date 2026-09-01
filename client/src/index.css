@@ -92,3 +92,14 @@ button { cursor: pointer; }
 .auth-dialog .button-spinner { animation: button-spin .8s linear infinite; flex: 0 0 auto; }
 @keyframes button-spin { to { transform: rotate(360deg); } }
 .auth-dialog button[aria-busy="true"] { cursor: wait; opacity: .82; }
+
+.auth-dialog .password-field { position: relative; display: flex; align-items: center; }
+.auth-dialog .password-field input { padding-right: 42px; }
+.auth-dialog .password-toggle { position: absolute; right: 8px; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 0; background: transparent; color: #70808a; cursor: pointer; }
+.auth-dialog .password-toggle:hover { color: var(--fcc-green); }
+.auth-dialog .password-strength { margin: -2px 0 10px; }
+.auth-dialog .strength-bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 5px; }
+.auth-dialog .strength-bars span { height: 4px; border-radius: 99px; background: #d7e0df; transition: background-color 180ms ease; }
+.auth-dialog .strength-bars span.strength-1, .auth-dialog .strength-bars span.strength-2 { background: #e48b68; }
+.auth-dialog .strength-bars span.strength-3 { background: #e2bb5e; }
+.auth-dialog .strength-bars span.strength-4, .auth-dialog .strength-bars span.strength-5 { background: var(--fcc-green); }
